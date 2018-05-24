@@ -12,7 +12,10 @@ allprojects {
 }
 
 2.在module.gradle下依赖项目
- compile 'com.github.TopTech666.EMClient:emclientlib:1.0.0'
+  compile ('com.github.TopTech666.EMClient:emclientlib:1.0.0'){
+        exclude module: 'appcompat-v7'
+        exclude module: 'support-annotations'
+    }
  
 3.项目初始化emclient
  1.在项目application的oncreate初始化
