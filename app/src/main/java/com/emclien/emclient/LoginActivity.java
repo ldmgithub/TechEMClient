@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.emclien.manager.EMClientUtils;
+import com.emclien.receiver.CallReceiver;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
@@ -35,6 +36,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         int id = v.getId();
+        EMClientUtils.init(this,null);
+        EMClientUtils.registerCallReveriver(this,new CallReceiver());
         switch (id) {
             case R.id.btn_regist:
                 register();

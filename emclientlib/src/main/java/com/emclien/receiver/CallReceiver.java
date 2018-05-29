@@ -18,7 +18,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import com.emclien.bean.CallEvent;
+import com.emclien.config.Constant;
 import com.hyphenate.util.EMLog;
+
+import rxbus.ecaray.com.rxbuslib.rxbus.RxBus;
 
 public class CallReceiver extends BroadcastReceiver {
 
@@ -30,15 +34,11 @@ public class CallReceiver extends BroadcastReceiver {
 		String from = intent.getStringExtra("from");
 		//call type
 		String type = intent.getStringExtra("type");
-//		if("video".equals(type)){ //video call
-//		    context.startActivity(new Intent(context, VideoCallActivity.class).
-//                    putExtra("username", from).putExtra("isComingCall", true).
-//                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-//		}else{ //voice call
-//		    context.startActivity(new Intent(context, VoiceCallActivity.class).
-//		            putExtra("username", from).putExtra("isComingCall", true).
-//		            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-//		}
+		if("video".equals(type)){ //video call
+			RxBus.getDefault().post(new CallEvent(from,"",true), Constant.RXBUS_TAG_VIDIO_CALL);
+		}else{ //voice call
+            RxBus.getDefault().post(new CallEvent(from,"",true), Constant.RXBUS_TAG_VIOCE_CALL);
+        }
 		EMLog.d("CallReceiver", "app received a incoming call");
 	}
 

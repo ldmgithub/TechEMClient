@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.emclien.emclientlib.BuildConfig;
+import com.emclien.receiver.CallReceiver;
 import com.emclien.receiver.HeadsetReceiver;
 import com.hyphenate.EMConferenceListener;
 import com.hyphenate.EMMessageListener;
@@ -37,7 +38,10 @@ public class EMClientManager {
 
     private static EMClientManager instance;
     private Context mAppContext;
-    protected EMMessageListener messageListener = null;
+    public EMMessageListener messageListener = null;
+    public boolean isVoiceCalling;
+    private CallReceiver callReceiver;
+    private Context appContext;
 
     public static EMClientManager getInstance() {
         synchronized (EMClientManager.class) {
@@ -49,10 +53,10 @@ public class EMClientManager {
     }
 
     //emchat初始化
-    protected void init(Context context, EMOptions options) {
+    public void init(Context context, EMOptions options) {
         mAppContext = context;
         if (EaseUI.getInstance().init(context, options)) {
-            //appContext = context;
+            appContext = context;
 
             //debug mode, you'd better set it to false, if you want release your App officially.
             EMClient.getInstance().setDebugMode(BuildConfig.DEBUG);
@@ -67,7 +71,7 @@ public class EMClientManager {
             //set Call options
             setCallOptions();
 
-//            setGlobalListeners();
+            setGlobalListeners();
 //            broadcastManager = LocalBroadcastManager.getInstance(appContext);
 //            initDbDao();
         }
@@ -142,7 +146,7 @@ public class EMClientManager {
     }
 
 
-    protected void setEaseUIProviders(EaseUI.EaseUserProfileProvider userProfileProvider, EaseSettingsProvider settingsProvider, EaseNotifier.EaseNotificationInfoProvider notificationInfoProvider) {
+    public void setEaseUIProviders(EaseUI.EaseUserProfileProvider userProfileProvider, EaseSettingsProvider settingsProvider, EaseNotifier.EaseNotificationInfoProvider notificationInfoProvider) {
         //set user avatar to circle shape
         EaseAvatarOptions avatarOptions = new EaseAvatarOptions();
         avatarOptions.setAvatarShape(1);
@@ -298,7 +302,7 @@ public class EMClientManager {
     /**
      * set global listener
      */
-//    protected void setGlobalListeners(){
+    public void setGlobalListeners() {
 ////        syncGroupsListeners = new ArrayList<>();
 ////        syncContactsListeners = new ArrayList<>();
 ////        syncBlackListListeners = new ArrayList<>();
@@ -346,10 +350,10 @@ public class EMClientManager {
 ////            }
 ////        };
 //
-//        IntentFilter callFilter = new IntentFilter(EMClient.getInstance().callManager().getIncomingCallBroadcastAction());
-//        if(callReceiver == null){
-//            callReceiver = new CallReceiver();
-//        }
+        IntentFilter callFilter = new IntentFilter(EMClient.getInstance().callManager().getIncomingCallBroadcastAction());
+        if(callReceiver == null){
+            callReceiver = new CallReceiver();
+        }
 //        EMClient.getInstance().conferenceManager().addConferenceListener(new EMConferenceListener() {
 //            @Override public void onMemberJoined(String username) {
 //                EMLog.i(TAG, String.format("member joined username: %s, member: %d", username,
@@ -417,7 +421,7 @@ public class EMClientManager {
 //            }
 //        });
 //        //register incoming call receiver
-//        appContext.registerReceiver(callReceiver, callFilter);
+        appContext.registerReceiver(callReceiver, callFilter);
 //        //register connection listener
 //        EMClient.getInstance().addConnectionListener(connectionListener);
 //        //register group and contact event listener
@@ -445,7 +449,7 @@ public class EMClientManager {
 //            EaseCommonUtils.setUserInitialLetter(user);
 //        }
 //        return user;
-//    }
+    }
     /**
      * EMEventListener
      */
@@ -455,7 +459,7 @@ public class EMClientManager {
      * If this event already handled by an activity, you don't need handle it again
      * activityList.size() <= 0 means all activities already in background or not in Activity Stack
      */
-//    protected void registerMessageListener() {
+//    public void registerMessageListener() {
 //        messageListener = new EMMessageListener() {
 //            private BroadcastReceiver broadCastReceiver = null;
 //
@@ -528,7 +532,7 @@ public class EMClientManager {
      *
      * @return
      */
-    protected boolean isLoggedIn() {
+    public boolean isLoggedIn() {
         return EMClient.getInstance().isLoggedInBefore();
     }
 
@@ -536,7 +540,7 @@ public class EMClientManager {
     /**
      * register group and contact listener, you need register when login
      */
-//    protected void registerGroupAndContactListener(){
+//    public void registerGroupAndContactListener(){
 //        if(!isGroupAndContactListenerRegisted){
 //            EMClient.getInstance().groupManager().addGroupChangeListener(new MyGroupChangeListener());
 //            EMClient.getInstance().contactManager().setContactListener(new MyContactListener());
@@ -781,14 +785,14 @@ public class EMClientManager {
      *
      * @return
      */
-    protected EaseNotifier getNotifier() {
+    public EaseNotifier getNotifier() {
         return easeUI.getNotifier();
     }
 
     /**
      * new message options provider
      */
-    protected interface EaseSettingsProvider {
+    public interface EaseSettingsProvider {
         boolean isMsgNotifyAllowed(EMMessage message);
 
         boolean isMsgSoundAllowed(EMMessage message);
