@@ -1,5 +1,7 @@
 package com.emclien.bean;
 
+import java.io.Serializable;
+
 /**
  * +----------------------------------------------------------------------
  * |  说明     ：语音、视频通话
@@ -11,17 +13,17 @@ package com.emclien.bean;
  * | 版权所有: 北京市车位管家科技有限公司
  * +----------------------------------------------------------------------
  */
-public class CallEvent {
+public class CallEvent implements Serializable{
     public String userName;//昵称
-    public String headPortrait;//头像
     public boolean isComingCall;//是否正在呼叫
+    public String ext;//自定义数据
 
     public CallEvent() {
     }
 
-    public CallEvent(String userName, String headPortrait, boolean isComingCall) {
+    public CallEvent(String userName, boolean isComingCall, String ext) {
+        this.ext = ext;
         this.userName = userName;
-        this.headPortrait = headPortrait;
         this.isComingCall = isComingCall;
     }
 

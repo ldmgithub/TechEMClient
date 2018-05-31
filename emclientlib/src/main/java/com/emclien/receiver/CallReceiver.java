@@ -20,6 +20,7 @@ import android.content.Intent;
 
 import com.emclien.bean.CallEvent;
 import com.emclien.config.Constant;
+import com.hyphenate.chat.EMClient;
 import com.hyphenate.util.EMLog;
 
 import rxbus.ecaray.com.rxbuslib.rxbus.RxBus;
@@ -34,10 +35,11 @@ public class CallReceiver extends BroadcastReceiver {
 		String from = intent.getStringExtra("from");
 		//call type
 		String type = intent.getStringExtra("type");
+		String ext = EMClient.getInstance().callManager().getCurrentCallSession().getExt();
 		if("video".equals(type)){ //video call
-			RxBus.getDefault().post(new CallEvent(from,"",true), Constant.RXBUS_TAG_VIDIO_CALL);
+			RxBus.getDefault().post(new CallEvent(from,true,ext), Constant.RXBUS_TAG_VIDIO_CALL);
 		}else{ //voice call
-            RxBus.getDefault().post(new CallEvent(from,"",true), Constant.RXBUS_TAG_VIOCE_CALL);
+            RxBus.getDefault().post(new CallEvent(from,true,ext), Constant.RXBUS_TAG_VIOCE_CALL);
         }
 		EMLog.d("CallReceiver", "app received a incoming call");
 	}
