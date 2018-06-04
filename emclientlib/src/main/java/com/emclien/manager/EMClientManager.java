@@ -33,13 +33,16 @@ import com.hyphenate.easeui.utils.EaseCommonUtils;
  * +----------------------------------------------------------------------
  */
 public class EMClientManager {
+    public  static String CALL_STATUES_DISCONNECT = "CALL_STATUES_DISCONNECT" ;
+    public  static String CALL_STATUES_CALLING = "CALL_STATUES_CALLING" ;
+    public  static String CALL_STATUES_IN_CALL = "CALL_STATUES_IN_CALL" ;
     private static String TAG = "EMClientManager";
     private EaseUI easeUI;
 
     private static EMClientManager instance;
     private Context mAppContext;
     public EMMessageListener messageListener = null;
-    public boolean isVoiceCalling;
+    public String mCallStatues = CALL_STATUES_IN_CALL;
     private CallReceiver callReceiver;
     private Context appContext;
 
