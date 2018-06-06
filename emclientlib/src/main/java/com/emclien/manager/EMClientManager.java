@@ -1,10 +1,11 @@
 package com.emclien.manager;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.emclien.emclientlib.BuildConfig;
 import com.emclien.receiver.CallReceiver;
@@ -14,11 +15,9 @@ import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
-import com.hyphenate.easeui.EaseUI;
-import com.hyphenate.easeui.domain.EaseAvatarOptions;
-import com.hyphenate.easeui.domain.EaseUser;
-import com.hyphenate.easeui.model.EaseNotifier;
-import com.hyphenate.easeui.utils.EaseCommonUtils;
+
+import java.util.Iterator;
+import java.util.List;
 
 
 /**
@@ -33,18 +32,16 @@ import com.hyphenate.easeui.utils.EaseCommonUtils;
  * +----------------------------------------------------------------------
  */
 public class EMClientManager {
-    public  static String CALL_STATUES_DISCONNECT = "CALL_STATUES_DISCONNECT" ;
-    public  static String CALL_STATUES_CALLING = "CALL_STATUES_CALLING" ;
-    public  static String CALL_STATUES_IN_CALL = "CALL_STATUES_IN_CALL" ;
+    public static String CALL_STATUES_DISCONNECT = "CALL_STATUES_DISCONNECT";
+    public static String CALL_STATUES_CALLING = "CALL_STATUES_CALLING";
+    public static String CALL_STATUES_IN_CALL = "CALL_STATUES_IN_CALL";
     private static String TAG = "EMClientManager";
-    private EaseUI easeUI;
 
     private static EMClientManager instance;
     private Context mAppContext;
     public EMMessageListener messageListener = null;
     public String mCallStatues = CALL_STATUES_IN_CALL;
     private CallReceiver callReceiver;
-    private Context appContext;
 
     public static EMClientManager getInstance() {
         synchronized (EMClientManager.class) {
@@ -55,31 +52,80 @@ public class EMClientManager {
         return instance;
     }
 
+    /**
+     * init flag: test if the sdk has been inited before, we don't need to init again
+     */
+    private boolean sdkInited = false;
+
     //emchat初始化
     public void init(Context context, EMOptions options) {
+        if (sdkInited) {
+            return;
+        }
         mAppContext = context;
-        if (EaseUI.getInstance().init(context, options)) {
-            appContext = context;
+        int pid = android.os.Process.myPid();
+        String processAppName = getAppName(pid);
 
-            //debug mode, you'd better set it to false, if you want release your App officially.
-            EMClient.getInstance().setDebugMode(BuildConfig.DEBUG);
-            //get easeui instance
-            easeUI = EaseUI.getInstance();
-            //to set user's profile and avatar
+        Log.d(TAG, "process app name : " + processAppName);
+
+        // if there is application has remote service, application:onCreate() maybe called twice
+        // this check is to make sure SDK will initialized only once
+        // return if process name is not application's name since the package name is the default process name
+        if (processAppName == null || !processAppName.equalsIgnoreCase(mAppContext.getPackageName())) {
+            Log.e(TAG, "enter the service process!");
+            return  ;
+        }
+        if(options == null){
+            EMClient.getInstance().init(context, initChatOptions());
+        }else{
+            EMClient.getInstance().init(context, options);
+        }
+
+        //debug mode, you'd better set it to false, if you want release your App officially.
+        EMClient.getInstance().setDebugMode(BuildConfig.DEBUG);
+        //get easeui instance
+        //to set user's profile and avatar
 //            setEaseUIProviders();
-            //initialize preference manager
-            PreferenceManager.init(context);
-            //initialize profile manager
-            //  getUserProfileManager().init(context);
-            //set Call options
-            setCallOptions();
+        //initialize preference manager
+        PreferenceManager.init(context);
+        //initialize profile manager
+        //  getUserProfileManager().init(context);
+        //set Call options
+        setCallOptions();
 
-            setGlobalListeners();
+        setGlobalListeners();
+        sdkInited = true;
 //            broadcastManager = LocalBroadcastManager.getInstance(appContext);
 //            initDbDao();
-        }
     }
-
+    /**
+     * check the application process name if process name is not qualified, then we think it is a service process and we will not init SDK
+     * @param pID
+     * @return
+     */
+    private String getAppName(int pID) {
+        String processName = null;
+        ActivityManager am = (ActivityManager) mAppContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List l = am.getRunningAppProcesses();
+        Iterator i = l.iterator();
+        PackageManager pm = mAppContext.getPackageManager();
+        while (i.hasNext()) {
+            ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo) (i.next());
+            try {
+                if (info.pid == pID) {
+                    CharSequence c = pm.getApplicationLabel(pm.getApplicationInfo(info.processName, PackageManager.GET_META_DATA));
+                    // Log.d("Process", "Id: "+ info.pid +" ProcessName: "+
+                    // info.processName +"  Label: "+c.toString());
+                    // processName = c.toString();
+                    processName = info.processName;
+                    return processName;
+                }
+            } catch (Exception e) {
+                // Log.d("Process", "Error>> :"+ e.toString());
+            }
+        }
+        return processName;
+    }
 
     private void setCallOptions() {
         HeadsetReceiver headsetReceiver = new HeadsetReceiver();
@@ -149,159 +195,6 @@ public class EMClientManager {
     }
 
 
-    public void setEaseUIProviders(EaseUI.EaseUserProfileProvider userProfileProvider, EaseSettingsProvider settingsProvider, EaseNotifier.EaseNotificationInfoProvider notificationInfoProvider) {
-        //set user avatar to circle shape
-        EaseAvatarOptions avatarOptions = new EaseAvatarOptions();
-        avatarOptions.setAvatarShape(1);
-        easeUI.setAvatarOptions(avatarOptions);
-
-        // set profile provider if you want easeUI to handle avatar and nickname
-//        easeUI.setUserProfileProvider(new EaseUI.EaseUserProfileProvider() {
-//
-//            @Override
-//            public EaseUser getUser(String username) {
-//                return getUserInfo(username);
-//            }
-//        });
-
-        //set options
-//        easeUI.setSettingsProvider(new EaseSettingsProvider() {
-//
-//            @Override
-//            public boolean isSpeakerOpened() {
-//                return demoModel.getSettingMsgSpeaker();
-//            }
-//
-//            @Override
-//            public boolean isMsgVibrateAllowed(EMMessage message) {
-//                return demoModel.getSettingMsgVibrate();
-//            }
-//
-//            @Override
-//            public boolean isMsgSoundAllowed(EMMessage message) {
-//                return demoModel.getSettingMsgSound();
-//            }
-//
-//            @Override
-//            public boolean isMsgNotifyAllowed(EMMessage message) {
-//                if(message == null){
-//                    return demoModel.getSettingMsgNotification();
-//                }
-//                if(!demoModel.getSettingMsgNotification()){
-//                    return false;
-//                }else{
-//                    String chatUsename = null;
-//                    List<String> notNotifyIds = null;
-//                    // get user or group id which was blocked to show message notifications
-//                    if (message.getChatType() == ChatType.Chat) {
-//                        chatUsename = message.getFrom();
-//                        notNotifyIds = demoModel.getDisabledIds();
-//                    } else {
-//                        chatUsename = message.getTo();
-//                        notNotifyIds = demoModel.getDisabledGroups();
-//                    }
-//
-//                    if (notNotifyIds == null || !notNotifyIds.contains(chatUsename)) {
-//                        return true;
-//                    } else {
-//                        return false;
-//                    }
-//                }
-//            }
-//        });
-        //set emoji icon provider
-//        easeUI.setEmojiconInfoProvider(new EaseUI.EaseEmojiconInfoProvider() {
-//
-//            @Override
-//            public EaseEmojicon getEmojiconInfo(String emojiconIdentityCode) {
-//                EaseEmojiconGroupEntity data = EmojiconExampleGroupData.getData();
-//                for(EaseEmojicon emojicon : data.getEmojiconList()){
-//                    if(emojicon.getIdentityCode().equals(emojiconIdentityCode)){
-//                        return emojicon;
-//                    }
-//                }
-//                return null;
-//            }
-//
-//            @Override
-//            public Map<String, Object> getTextEmojiconMapping() {
-//                return null;
-//            }
-//        });
-
-        //set notification options, will use default if you don't set it
-//        easeUI.getNotifier().setNotificationInfoProvider(new EaseNotifier.EaseNotificationInfoProvider() {
-//
-//            @Override
-//            public String getTitle(EMMessage message) {
-//                //you can update title here
-//                return null;
-//            }
-//
-//            @Override
-//            public int getSmallIcon(EMMessage message) {
-//                //you can update icon here
-//                return 0;
-//            }
-//
-//            @Override
-//            public String getDisplayedText(EMMessage message) {
-//                // be used on notification bar, different text according the message type.
-//                String ticker = EaseCommonUtils.getMessageDigest(message, appContext);
-//                if(message.getType() == Type.TXT){
-//                    ticker = ticker.replaceAll("\\[.{2,3}\\]", "[表情]");
-//                }
-//                EaseUser user = getUserInfo(message.getFrom());
-//                if(user != null){
-//                    if(EaseAtMessageHelper.get().isAtMeMsg(message)){
-//                        return String.format(appContext.getString(R.string.at_your_in_group), user.getNick());
-//                    }
-//                    return user.getNick() + ": " + ticker;
-//                }else{
-//                    if(EaseAtMessageHelper.get().isAtMeMsg(message)){
-//                        return String.format(appContext.getString(R.string.at_your_in_group), message.getFrom());
-//                    }
-//                    return message.getFrom() + ": " + ticker;
-//                }
-//            }
-//
-//            @Override
-//            public String getLatestText(EMMessage message, int fromUsersNum, int messageNum) {
-//                // here you can customize the text.
-//                // return fromUsersNum + "contacts send " + messageNum + "messages to you";
-//                return null;
-//            }
-//
-//            @Override
-//            public Intent getLaunchIntent(EMMessage message) {
-//                // you can set what activity you want display when user click the notification
-//                Intent intent = new Intent(appContext, ChatActivity.class);
-//                // open calling activity if there is call
-//                if(isVideoCalling){
-//                    intent = new Intent(appContext, VideoCallActivity.class);
-//                }else if(isVoiceCalling){
-//                    intent = new Intent(appContext, VoiceCallActivity.class);
-//                }else{
-//                    EMMessage.ChatType chatType = message.getChatType();
-//                    if (chatType == EMMessage.ChatType.Chat) { // single chat message
-//                        intent.putExtra("userId", message.getFrom());
-//                        intent.putExtra("chatType", Constant.CHATTYPE_SINGLE);
-//                    } else { // group chat message
-//                        // message.getTo() is the group id
-//                        intent.putExtra("userId", message.getTo());
-//                        if(chatType == EMMessage.ChatType.GroupChat){
-//                            intent.putExtra("chatType", Constant.CHATTYPE_GROUP);
-//                        }else{
-//                            intent.putExtra("chatType", Constant.CHATTYPE_CHATROOM);
-//                        }
-//
-//                    }
-//                }
-//                return intent;
-//            }
-//        });
-    }
-
     /**
      * set global listener
      */
@@ -354,7 +247,7 @@ public class EMClientManager {
 ////        };
 //
         IntentFilter callFilter = new IntentFilter(EMClient.getInstance().callManager().getIncomingCallBroadcastAction());
-        if(callReceiver == null){
+        if (callReceiver == null) {
             callReceiver = new CallReceiver();
         }
 //        EMClient.getInstance().conferenceManager().addConferenceListener(new EMConferenceListener() {
@@ -424,7 +317,7 @@ public class EMClientManager {
 //            }
 //        });
 //        //register incoming call receiver
-        appContext.registerReceiver(callReceiver, callFilter);
+        mAppContext.registerReceiver(callReceiver, callFilter);
 //        //register connection listener
 //        EMClient.getInstance().addConnectionListener(connectionListener);
 //        //register group and contact event listener
@@ -775,21 +668,19 @@ public class EMClientManager {
         // ============================= group_reform new add api end
     }
 */
-    private void showToast(final String message) {
-        Log.d(TAG, "receive invitation to join the group：" + message);
-        if (BuildConfig.DEBUG) {
-            Toast.makeText(mAppContext, message, Toast.LENGTH_LONG).show();
 
-        }
-    }
+    protected EMOptions initChatOptions(){
+        Log.d(TAG, "init HuanXin Options");
 
-    /**
-     * get instance of EaseNotifier
-     *
-     * @return
-     */
-    public EaseNotifier getNotifier() {
-        return easeUI.getNotifier();
+        EMOptions options = new EMOptions();
+        // change to need confirm contact invitation
+        options.setAcceptInvitationAlways(false);
+        // set if need read ack
+        options.setRequireAck(true);
+        // set if need delivery ack
+        options.setRequireDeliveryAck(false);
+
+        return options;
     }
 
     /**
@@ -805,23 +696,4 @@ public class EMClientManager {
         boolean isSpeakerOpened();
     }
 
-
-    private EaseUser getUserInfo(String username) {
-        // To get instance of EaseUser, here we get it from the user list in memory
-        // You'd better cache it if you get it from your server
-        EaseUser user = null;
-//        if(username.equals(EMClient.getInstance().getCurrentUser()))
-//            return getUserProfileManager().getCurrentUserInfo();
-//        user = getContactList().get(username);
-//        if(user == null && getRobotList() != null){
-//            user = getRobotList().get(username);
-//        }
-
-        // if user is not in your contacts, set inital letter for him/her
-        if (user == null) {
-            user = new EaseUser(username);
-            EaseCommonUtils.setUserInitialLetter(user);
-        }
-        return user;
-    }
 }

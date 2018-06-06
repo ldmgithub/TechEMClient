@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.emclien.emclientlib.utils;
+package com.emclien.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

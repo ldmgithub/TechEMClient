@@ -9,6 +9,9 @@ android {
         versionName "1.0"
 
         multiDexEnabled true
+        ndk {
+            abiFilters   "armeabi-v7a"
+        }
     }
     buildTypes {
         release {
@@ -16,17 +19,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
-    }
+//    sourceSets {
+//        main {
+//            jniLibs.srcDirs = ['libs']
+//        }
+//    }
 
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:appcompat-v7:26.1.0'
-    compile project(':easeui')
     compile 'com.github.TopTech666:TechRxbus:1.2.2'
 }

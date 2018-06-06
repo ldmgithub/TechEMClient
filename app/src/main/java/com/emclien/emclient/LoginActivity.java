@@ -10,10 +10,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.emclien.manager.EMClientUtils;
+import com.emclien.utils.EaseCommonUtils;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMError;
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.easeui.utils.EaseCommonUtils;
 import com.hyphenate.exceptions.HyphenateException;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
