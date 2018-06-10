@@ -40,7 +40,7 @@ public class EMClientManager {
     private static EMClientManager instance;
     private Context mAppContext;
     public EMMessageListener messageListener = null;
-    public String mCallStatues = CALL_STATUES_IN_CALL;
+    public String mCallStatues = CALL_STATUES_DISCONNECT;
     private CallReceiver callReceiver;
 
     public static EMClientManager getInstance() {
