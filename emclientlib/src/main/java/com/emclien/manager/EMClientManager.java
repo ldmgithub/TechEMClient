@@ -2,14 +2,12 @@ package com.emclien.manager;
 
 import android.app.ActivityManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.emclien.emclientlib.BuildConfig;
 import com.emclien.receiver.CallReceiver;
-import com.emclien.receiver.HeadsetReceiver;
 import com.hyphenate.EMConferenceListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
@@ -128,9 +126,9 @@ public class EMClientManager {
     }
 
     private void setCallOptions() {
-        HeadsetReceiver headsetReceiver = new HeadsetReceiver();
-        IntentFilter headsetFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
-        mAppContext.registerReceiver(headsetReceiver, headsetFilter);
+//        HeadsetReceiver headsetReceiver = new HeadsetReceiver();
+//        IntentFilter headsetFilter = new IntentFilter(Intent.ACTION_HEADSET_PLUG);
+//        mAppContext.registerReceiver(headsetReceiver, headsetFilter);
 
         // min video kbps
         int minBitRate = PreferenceManager.getInstance().getCallMinVideoKbps();
