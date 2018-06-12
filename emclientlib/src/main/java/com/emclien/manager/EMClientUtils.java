@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.emclien.utils.TagLibUtil;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.EMConnectionListener;
 import com.hyphenate.EMContactListener;
@@ -24,6 +23,7 @@ import com.hyphenate.exceptions.EMNoActiveCallException;
 import com.hyphenate.exceptions.EMServiceNotReadyException;
 import com.hyphenate.exceptions.HyphenateException;
 import com.hyphenate.media.EMCallSurfaceView;
+import com.hyphenate.util.EMLog;
 
 import java.util.Iterator;
 import java.util.List;
@@ -174,7 +174,7 @@ public class EMClientUtils {
     public static void sendMessageCustom(String toChatUsername, String content, Map<String, Object> params, EMCallBack emCallBack) {
         EMMessage message = EMMessage.createTxtSendMessage(content, toChatUsername);
         Iterator iterator = params.keySet().iterator();
-        TagLibUtil.showLogDebug(TAG, "params=" + params.toString());
+        EMLog.d(TAG, "params=" + params.toString());
         while (iterator.hasNext()) {
             Map.Entry<String, Object> enter = (Map.Entry<String, Object>) iterator.next();
             message.setAttribute(enter.getKey(), String.valueOf(enter.getValue()));
@@ -266,7 +266,7 @@ public class EMClientUtils {
     public static void sendGroupMessageCustom(String toChatUsername, String content, Map<String, Object> params, EMCallBack emCallBack) {
         EMMessage message = EMMessage.createTxtSendMessage(content, toChatUsername);
         Iterator iterator = params.keySet().iterator();
-        TagLibUtil.showLogDebug(TAG, "params=" + params.toString());
+        EMLog.d(TAG, "params=" + params.toString());
         while (iterator.hasNext()) {
             Map.Entry<String, Object> enter = (Map.Entry<String, Object>) iterator.next();
             message.setAttribute(enter.getKey(), String.valueOf(enter.getValue()));
@@ -431,12 +431,12 @@ public class EMClientUtils {
      **************************************************/
     public static void recallMessage(EMMessage message) {
         if (message == null) {
-            TagLibUtil.showLogDebug(TAG, "message 为空");
+            EMLog.d(TAG, "message 为空");
         } else {
             try {
                 EMClient.getInstance().chatManager().recallMessage(message);
             } catch (HyphenateException e) {
-                TagLibUtil.showLogDebug(TAG, "recallMessage,e=" + e.getMessage());
+                EMLog.d(TAG, "recallMessage,e=" + e.getMessage());
             }
         }
     }
