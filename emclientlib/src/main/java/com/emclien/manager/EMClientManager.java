@@ -40,6 +40,7 @@ public class EMClientManager {
     public EMMessageListener messageListener = null;
     public String mCallStatues = CALL_STATUES_DISCONNECT;
     private CallReceiver callReceiver;
+    private boolean mIsAutoLogin;//是否自动登录
 
     public static EMClientManager getInstance() {
         synchronized (EMClientManager.class) {
@@ -71,11 +72,11 @@ public class EMClientManager {
         // return if process name is not application's name since the package name is the default process name
         if (processAppName == null || !processAppName.equalsIgnoreCase(mAppContext.getPackageName())) {
             Log.e(TAG, "enter the service process!");
-            return  ;
+            return;
         }
-        if(options == null){
+        if (options == null) {
             EMClient.getInstance().init(context, initChatOptions());
-        }else{
+        } else {
             EMClient.getInstance().init(context, options);
         }
 
@@ -96,8 +97,15 @@ public class EMClientManager {
 //            broadcastManager = LocalBroadcastManager.getInstance(appContext);
 //            initDbDao();
     }
+
+    public void init(Context context, EMOptions options, boolean isAutoLogin) {
+        this.mIsAutoLogin = isAutoLogin;
+        init(context, options);
+    }
+
     /**
      * check the application process name if process name is not qualified, then we think it is a service process and we will not init SDK
+     *
      * @param pID
      * @return
      */
@@ -666,8 +674,7 @@ public class EMClientManager {
         // ============================= group_reform new add api end
     }
 */
-
-    protected EMOptions initChatOptions(){
+    protected EMOptions initChatOptions() {
         Log.d(TAG, "init HuanXin Options");
 
         EMOptions options = new EMOptions();
@@ -676,8 +683,11 @@ public class EMClientManager {
         // set if need read ack
         options.setRequireAck(true);
         // set if need delivery ack
-        options.setRequireDeliveryAck(false);
+        if (!mIsAutoLogin) {
+            options.setRequireDeliveryAck(false);
+        }
 
+        options.setAutoLogin(false);
         return options;
     }
 

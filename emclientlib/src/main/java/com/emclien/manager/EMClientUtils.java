@@ -52,6 +52,16 @@ public class EMClientUtils {
         EMClientManager.getInstance().init(context, options);
     }
 
+    //初始化
+    public static void init(Context context, EMOptions options,boolean mIsAutoLogin) {
+        //options.setAutoLogin(false);根据项目要求是否设置自动登录，默认是true自动登录
+        if (mIsAutoLogin){
+            EMClientManager.getInstance().init(context, options);
+        }else {
+            EMClientManager.getInstance().init(context, options,false);
+        }
+    }
+
     //登录
     public static void login(String username, String password, EMCallBack callBack) {
         EMClient.getInstance().login(username, password, callBack);

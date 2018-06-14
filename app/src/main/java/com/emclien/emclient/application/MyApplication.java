@@ -19,6 +19,6 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        EMClientUtils.init(this,null);
+        EMClientUtils.init(this,null,false);
     }
 }
