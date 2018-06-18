@@ -28,22 +28,7 @@ allprojects {
     }
 }
 
-easyui中initChatOptions方法为：
-protected EMOptions initChatOptions(){
-        Log.d(TAG, "init HuanXin Options");
-
-        EMOptions options = new EMOptions();
-        // change to need confirm contact invitation
-        options.setAcceptInvitationAlways(false);
-        // set if need read ack
-        options.setRequireAck(true);
-        // set if need delivery ack
-        options.setRequireDeliveryAck(false);
-        //不自动登录
-        options.setAutoLogin(false);
-        
-        return options;
-    }
+ 
     
   2.在module的清单文件中配置环信消息接受者
      <!-- 设置环信应用的AppKey -->
