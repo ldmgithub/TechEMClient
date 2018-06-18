@@ -39,6 +39,7 @@ public class EMClientManager {
     private Context mAppContext;
     public EMMessageListener messageListener = null;
     public String mCallStatues = CALL_STATUES_DISCONNECT;
+    public long mCallStartTime ;
     private CallReceiver callReceiver;
     private boolean mIsAutoLogin;//是否自动登录
 
