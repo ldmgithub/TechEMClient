@@ -13,6 +13,7 @@ import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.chat.EMOptions;
+import com.hyphenate.push.EMPushConfig;
 
 import java.util.Iterator;
 import java.util.List;
@@ -59,9 +60,10 @@ public class EMClientManager {
 
     //emchat初始化
     public void init(Context context, EMOptions options) {
-        if (sdkInited) {
-            return;
-        }
+//        if (sdkInited) {
+//            return;
+//        }
+
         mAppContext = context;
         int pid = android.os.Process.myPid();
         String processAppName = getAppName(pid);

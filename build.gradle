@@ -19,9 +19,25 @@ allprojects {
         google()
         jcenter()
         mavenCentral()
+        maven { url 'http://developer.huawei.com/repo'}
         maven { url "https://jitpack.io" }
         maven { url "https://raw.githubusercontent.com/HyphenateInc/Hyphenate-SDK-Android/master/repository" }
     }
+}
+
+ext {
+    // Sdk and tools
+    //localBuildToolsVersion是gradle.properties中的数据
+    buildToolsVersion = "26.0.2"
+    compileSdkVersion = 27
+    minSdkVersion = 16
+    targetSdkVersion = 26
+    versionCode = 7
+    versionName = "2.0.0"
+    javaVersion = JavaVersion.VERSION_1_8
+    annotationProcessor = "latest.release"
+    lastVersion = "latest.release"
+
 }
 
 task clean(type: Delete) {

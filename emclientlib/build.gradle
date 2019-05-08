@@ -31,6 +31,12 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     provided 'com.android.support:appcompat-v7:26.1.0'
     provided 'com.github.TopTech666:TechRxbus:1.2.2'
-    provided files('libs/MiPush_SDK_Client_2_2_19.jar')
-    implementation files('libs/hyphenatechat_3.5.3.jar')
+    compile "com.hyphenate:hyphenate-sdk:$rootProject.lastVersion"
+    // 华为 HMS push sdk
+    implementation "com.huawei.android.hms:push:$rootProject.lastVersion"
+    implementation "com.meizu.flyme.internet:push-internal:$rootProject.lastVersion"
+    //配置集成sdk
+    implementation files('libs/mi_push_v3.6.12.jar')
+    implementation files('libs/oppo_push_v1.0.1.jar')
+    implementation files('libs/vivo_push_v2.3.1.jar')
 }
