@@ -35,7 +35,12 @@ public class CallReceiver extends BroadcastReceiver {
 		String from = intent.getStringExtra("from");
 		//call type
 		String type = intent.getStringExtra("type");
-		String ext = EMClient.getInstance().callManager().getCurrentCallSession().getExt();
+		String  ext = "";
+		try {
+			ext = EMClient.getInstance().callManager().getCurrentCallSession().getExt();
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		if("video".equals(type)){ //video call
 			RxBus.getDefault().post(new CallEvent(from,true,ext), Constant.RXBUS_TAG_VIDIO_CALL);
 		}else{ //voice call
