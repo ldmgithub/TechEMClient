@@ -195,9 +195,9 @@ public class EMClientManager {
 
         // 设置会议模式
         if (PreferenceManager.getInstance().isLargeConferenceMode()) {
-            EMClient.getInstance().conferenceManager().setConferenceMode(EMConferenceListener.ConferenceMode.LARGE);
+//            EMClient.getInstance().conferenceManager().setConferenceMode(EMConferenceListener.ConferenceMode.LARGE);
         } else {
-            EMClient.getInstance().conferenceManager().setConferenceMode(EMConferenceListener.ConferenceMode.NORMAL);
+//            EMClient.getInstance().conferenceManager().setConferenceMode(EMConferenceListener.ConferenceMode.NORMAL);
         }
     }
 

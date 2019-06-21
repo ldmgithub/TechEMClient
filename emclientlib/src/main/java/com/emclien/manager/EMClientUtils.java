@@ -818,7 +818,7 @@ public class EMClientUtils {
      * *************************************************/
     public static void takePicture(String filepath) {
         EMVideoCallHelper callHelper = EMClient.getInstance().callManager().getVideoCallHelper();
-        callHelper.takePicture(filepath);
+//        callHelper.takePicture(filepath);
 
     }
 
@@ -828,7 +828,7 @@ public class EMClientUtils {
      * *************************************************/
     public static void startVideoRecord(String dirPath) {
         EMVideoCallHelper callHelper = EMClient.getInstance().callManager().getVideoCallHelper();
-        callHelper.startVideoRecord(dirPath);
+//        callHelper.startVideoRecord(dirPath);
 
     }
 
@@ -838,7 +838,7 @@ public class EMClientUtils {
      * *************************************************/
     public static void stopVideoRecord() {
         EMVideoCallHelper callHelper = EMClient.getInstance().callManager().getVideoCallHelper();
-        callHelper.stopVideoRecord();
+//        callHelper.stopVideoRecord();
 
     }  /***************************************************
      * 方法描述 ：设置用户名
