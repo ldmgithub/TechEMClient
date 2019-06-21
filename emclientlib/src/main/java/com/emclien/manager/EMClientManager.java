@@ -8,7 +8,6 @@ import android.util.Log;
 
 import com.emclien.emclientlib.BuildConfig;
 import com.emclien.receiver.CallReceiver;
-import com.hyphenate.EMConferenceListener;
 import com.hyphenate.EMMessageListener;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.chat.EMMessage;
