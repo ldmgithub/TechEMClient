@@ -33,5 +33,5 @@ dependencies {
     provided 'com.github.TopTech666:TechRxbus:1.2.2'
 //    provided files('libs/MiPush_SDK_Client_2_2_19.jar')
 //    compile 'com.hyphenate:hyphenate-sdk:3.6.0'
-    implementation files('libs/hyphenatechat_3.6.0.jar')
+    implementation files('libs/hyphenatechat_3.6.1.jar')
 }
