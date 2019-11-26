@@ -30,7 +30,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         findViewById(R.id.btn_login).setOnClickListener(this);
         findViewById(R.id.btn_regist).setOnClickListener(this);
         findViewById(R.id.btn_voice_call).setOnClickListener(this);
-
     }
 
     @Override
@@ -92,7 +91,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void run() {
                         Toast.makeText(getApplicationContext(), message,
                                 Toast.LENGTH_SHORT).show();
-                        Toast.makeText(LoginActivity.this,"登录失败",Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -116,8 +115,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         return true;
     }
-
-
+    
     private void register() {
         final String name = tvName.getText().toString();
         final String pwd = tvPwd.getText().toString();
