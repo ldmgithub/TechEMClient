@@ -17,6 +17,7 @@ import com.hyphenate.exceptions.EMServiceNotReadyException;
 import com.hyphenate.exceptions.HyphenateException;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+    
     EditText tvName;
     EditText tvPwd;
     private static final String TAG = "LoginActivity";
